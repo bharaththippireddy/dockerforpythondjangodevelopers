@@ -1,0 +1,30 @@
+version: '3.9'
+
+services: 
+    web:
+        container_name: web
+        build: .
+        restart: always
+        command: >
+            bash -c "python manage.py makemigrations
+            && python manage.py migrate
+            && python manage.py runserver 0.0.0.0:8000" 
+        volumes: 
+            - .:/code
+        ports: 
+            - 10555:8000
+        depends_on: 
+            - db
+    db:
+        image: postgres
+        container_name: db
+        environment: 
+            - POSTGRES_DB=studentdb
+            - POSTGRES_USER=test
+            - POSTGRES_PASSWORD=password
+            - POSGRES_HOST_AUTH_METHOD=trust
+        volumes: 
+            - pgdata:/var/lib/postgress/data
+
+volumes: 
+    pgdata:
